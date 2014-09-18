@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">InstagramViewer</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="popular_photos_captions">Popular Photos</string>
+    <string name="caption_default_text">This is a default caption</string>
+    <string name="likesCount_default">likes</string>
+    <string name="username">username</string>
+
+</resources>
