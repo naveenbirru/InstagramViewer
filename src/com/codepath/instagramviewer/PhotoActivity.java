@@ -16,31 +16,57 @@ import android.widget.ListView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 
 public class PhotoActivity extends Activity {
 
 	public static final String CLIENT_ID = "a86c620c392c45ed937760d4342b1752";
 	private ArrayList<InstagramPhoto> photos;
 	private InstagramPhotoAdapter aPhotos;
+	
+	PullToRefreshListView lvPhotos;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
-        fetchPopularPhotos();
+       
+        photos = new ArrayList<InstagramPhoto>();
+        aPhotos = new InstagramPhotoAdapter(this, photos);
+        fetchPopularPhotos();	
+        
+        lvPhotos.setOnRefreshListener(new OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				// TODO Auto-generated method stub
+				fetchPopularPhotos();
+				lvPhotos.onRefreshComplete();
+				
+			}
+		});
+        
+       
     }
 
 
     private void fetchPopularPhotos() {
     	
-    	photos = new ArrayList<InstagramPhoto>();// Initialize the list
+    	//photos = new ArrayList<InstagramPhoto>();// Initialize the list
     	
     	// create and initialize the adapter and bind it to the ArrayList
-    	aPhotos = new InstagramPhotoAdapter(this, photos);
+    	//aPhotos = new InstagramPhotoAdapter(this, photos);
     	
     	//Get the List View
-    	ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
+    	lvPhotos = (PullToRefreshListView) findViewById(R.id.lvPhotos);
+    	
+    	//p2r_lvphotos = (PullToRefreshListView) findViewById(R.id.lvPhotos);
     	
     	//Bind the adapter to the View
+    	
+    	
     	lvPhotos.setAdapter(aPhotos);
     	
 		// https://api.instagram.com/v1/media/popular?client_id=a86c620c392c45ed937760d4342b1752
@@ -75,7 +101,9 @@ public class PhotoActivity extends Activity {
     						photo.caption = photoJSON.getJSONObject("caption").getString("text");
     					}
     					photo.imageUrl = photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
-    					photo.profile_pic_url = photoJSON.getJSONObject("user").getString("profile_picture");
+    					if(photoJSON.getJSONObject("user").getString("profile_picture") != null) {
+    						photo.profile_pic_url = photoJSON.getJSONObject("user").getString("profile_picture");
+    					}
     					photo.imageHeight = photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
     					photo.likesCount = photoJSON.getJSONObject("likes").getInt("count");
     					//Log.i("DEBUG", photo.toString());
@@ -97,9 +125,10 @@ public class PhotoActivity extends Activity {
     	//Trigger the network request
     	
     	//handle the data (JSON)
+    	lvPhotos.setScrollingCacheEnabled(false);
 		
 	}
-
+    
 
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

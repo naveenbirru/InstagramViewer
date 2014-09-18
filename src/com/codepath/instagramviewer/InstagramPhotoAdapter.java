@@ -40,6 +40,7 @@ public class InstagramPhotoAdapter extends ArrayAdapter<InstagramPhoto> {
 		TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUserName);
 		TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
 		
+		//CircularImageView imgProfilePic = (CircularImageView) convertView.findViewById(R.id.profile_pic);
 		ImageView imgProfilePic = (ImageView) convertView.findViewById(R.id.profile_pic);
 		
 		//populate the subview (TextFeild, ImageView) with correct data
